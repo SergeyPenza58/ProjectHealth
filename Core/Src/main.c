@@ -114,10 +114,10 @@ const float pressure_Warning_H = 760; /*<Store the warning value of pressure hig
 const float pressure_Alaram_H = 770; /*<Store the warning value of pressure high*/
 
 const float pressure_Warning_L = 650; /*<Store the warning value of pressure low*/
-const float pressure_Alaram_L = 640; /*<Store the warning value of pressure low*/
+const float pressure_Alaram_L = 640; /*<Store the alarm value of pressure low*/
 
 const float altitude_Warning = 3000; /*<Store the warning value of altitude*/
-const float altitude_Alaram = 3500; /*<Store the warning value of altitude*/
+const float altitude_Alaram = 3500; /*<Store the alarm value of altitude*/
 
 uint8_t time_1msIsPassed;
 BuzzerStatus buzzerStatus;
@@ -262,17 +262,18 @@ int main(void)
 						if ((tmpStatus > tmp_norma) || (prsStatus > prs_norma)
 								|| (altStatus > alt_norma))
 						{
-							if ((tmpStatus > tmp_alarmL)
-									|| (prsStatus > prs_alarmL)
-									|| (altStatus > alt_alarm))
+							if ((tmpStatus >= tmp_alarmL)
+									|| (prsStatus >= prs_alarmL)
+									|| (altStatus >= alt_alarm))
 							{
 								// we have a Alarm situation
-								Buzzer_Warning_TurnON();
+								Buzzer_Alarm_TurnOn();
+								
 							}
 							else
 							{
 								// we have a Warning situation
-								Buzzer_Alarm_TurnOn();
+								Buzzer_Warning_TurnON();
 							}
 						}
 						else
@@ -690,7 +691,7 @@ float Altitude_GetValue(float pressure, float temperature_C)
 	// P0 - pressure at sea level [Pa];  1 mmHg = 133.322 Pa 760 mm =1 01324.72
 	// P - current @pressure_Pa
 
-	float coef1 = (-0.029 * 9.81) / (8.31 * temperature_C + 273.15);
+	float coef1 = (-0.029 * 9.81) / (8.31 * (temperature_C + 273.15));
 
 	float myln = log(pressure / 760.0);
 
